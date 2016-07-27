@@ -1,1 +1,2 @@
-//ignore the things
+//ignore hidden directories
+.*/**
