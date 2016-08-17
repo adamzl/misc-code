@@ -1,7 +1,6 @@
-//make global
+const unsigned int dumpCount = 1000;
 bool reset = true;
 unsigned int recordingCount = 0;
-const unsigned int dumpCount = 1000;
 unsigned __int64 start, stop, totalTime;
 unsigned int aux1, aux2;
 unsigned __int64 min, max;
@@ -18,8 +17,6 @@ unsigned __int64 min, max;
     }                                       \
     start = __rdtscp(&aux1);                \
 }
-
-//time here
 
 #define azlStopTimer                        \
 {                                           \
