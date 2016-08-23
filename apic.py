@@ -4,8 +4,10 @@ import re
 import subprocess
 import sys
 
-def runApicDir(ApicDirectory, apicParameters):
-    with open(os.path.join(ApicDirectory, "runApicDirResult.csv"), "w") as outputFile:
+def runApicDir(ApicDirectory, apicParameters, outputPath=""):
+    if outputPath == "":
+        outputPath = os.path.join(ApicDirectory, "runApicDirResult.csv")
+    with open(outputPath, "w") as outputFile:
         outputFile.write("APIC,Averag FPS,Plus Minus,Frames")
         for dirItem in os.listdir(ApicDirectory):
             dirItemPath = os.path.join(ApicDirectory, dirItem);
@@ -17,7 +19,6 @@ def runApicDir(ApicDirectory, apicParameters):
                                         stdout=subprocess.PIPE)
                 thread.wait()
                 output = thread.communicate()[0].decode("utf-8")
-                print(output)
                 reresult = re.match(r"^total time: (\d+\.\d+) seconds, (\d+) frames, average FPS: (\d+\.\d+) plus or minus (\d+\.\d+)%", output)
                 outputFile.write("\n" + dirItem + "," + reresult.groups()[2] + "," + reresult.groups()[3] + "," + reresult.groups()[1])
 
