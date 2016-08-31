@@ -4,23 +4,34 @@ import re
 import subprocess
 import sys
 
-def runApicDir(ApicDirectory, apicParameters, outputPath=""):
-    if outputPath == "":
-        outputPath = os.path.join(ApicDirectory, "runApicDirResult.csv")
-    with open(outputPath, "w") as outputFile:
+def runApicDir(ApicDirectory, apicParameters, logsPath=""):
+    outputDir = os.path.join(ApicDirectory, "logs")
+    os.makedirs(outputDir, exist_ok=True)
+    print("Writing output to " + outputDir)
+    if logsPath != "":
+        outLogsPath = os.path.join(ApicDirectory, "logs")
+        print("Copying per-run logs from " + logsPath + " to " + outLogsPath)
+    with open(os.path.join(outputDir, "results.csv"), "w") as outputFile:
         outputFile.write("APIC,Averag FPS,Plus Minus,Frames")
-        for dirItem in os.listdir(ApicDirectory):
-            dirItemPath = os.path.join(ApicDirectory, dirItem);
-            if os.path.isdir(dirItemPath):
-                executablePath = glob.glob(os.path.join(dirItemPath, "*.exe"))
-                commandLine = [executablePath[0], apicParameters]
+        for dirItem in os.scandir(ApicDirectory):
+            if dirItem.path == outputDir:
+                continue
+            if dirItem.is_dir():
+                executablePath = glob.glob(os.path.join(dirItem.path, "x64", "*.exe"))
+                commandLine = [executablePath[0]] + apicParameters.split(" ")
+                print(commandLine[0])
                 thread = subprocess.Popen(commandLine,
-                                        cwd=dirItemPath,
+                                        cwd=dirItem.path,
                                         stdout=subprocess.PIPE)
                 thread.wait()
                 output = thread.communicate()[0].decode("utf-8")
                 reresult = re.match(r"^total time: (\d+\.\d+) seconds, (\d+) frames, average FPS: (\d+\.\d+) plus or minus (\d+\.\d+)%", output)
-                outputFile.write("\n" + dirItem + "," + reresult.groups()[2] + "," + reresult.groups()[3] + "," + reresult.groups()[1])
+                outputFile.write("\n" + dirItem.name + "," + reresult.groups()[2] + "," + reresult.groups()[3] + "," + reresult.groups()[1])
+                if logsPath != "":
+                    logList = glob.glob(os.path.join(logsPath, "*"))
+                    os.makedirs(os.path.join(outLogsPath, dirItem.name), exist_ok=True)
+                    for logItem in logList:
+                        os.rename(logItem, os.path.join(outLogsPath, dirItem.name, os.path.basename(logItem)))
 
 if __name__ == "__main__":
-    runApicDir(sys.argv[1], sys.argv[2], sys.argv[3])
+    runApicDir(r"C:\Users\adam\Desktop\APIC", "100(0.1%) 100", logsPath=r"c:\users\adam\desktop\logging")

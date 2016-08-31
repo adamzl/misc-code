@@ -17,3 +17,5 @@ def csvMergeToXlsx(directory, deliminator=','):
                     worksheet.write(rowNum, colNum, colText)
     workbook.close()
 
+def createVlookupDelta():
+    pass
