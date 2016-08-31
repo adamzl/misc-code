@@ -23,4 +23,4 @@ def runApicDir(ApicDirectory, apicParameters, outputPath=""):
                 outputFile.write("\n" + dirItem + "," + reresult.groups()[2] + "," + reresult.groups()[3] + "," + reresult.groups()[1])
 
 if __name__ == "__main__":
-    runApicDir(sys.argv[1], sys.argv[2])
+    runApicDir(sys.argv[1], sys.argv[2], sys.argv[3])
