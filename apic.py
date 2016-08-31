@@ -25,7 +25,7 @@ def runApicDir(ApicDirectory, apicParameters, logsPath=""):
                                         stdout=subprocess.PIPE)
                 thread.wait()
                 output = thread.communicate()[0].decode("utf-8")
-                reresult = re.match(r"^total time: (\d+\.\d+) seconds, (\d+) frames, average FPS: (\d+\.\d+) plus or minus (\d+\.\d+)%", output)
+                reresult = re.search(r"total time: (\d+\.\d+) seconds, (\d+) frames, average FPS: (\d+\.\d+) plus or minus (\d+\.\d+)%", output)
                 outputFile.write("\n" + dirItem.name + "," + reresult.groups()[2] + "," + reresult.groups()[3] + "," + reresult.groups()[1])
                 if logsPath != "":
                     logList = glob.glob(os.path.join(logsPath, "*"))
@@ -34,4 +34,4 @@ def runApicDir(ApicDirectory, apicParameters, logsPath=""):
                         os.rename(logItem, os.path.join(outLogsPath, dirItem.name, os.path.basename(logItem)))
 
 if __name__ == "__main__":
-    runApicDir(r"C:\Users\adam\Desktop\APIC", "100(0.1%) 100", logsPath=r"c:\users\adam\desktop\logging")
+    runApicDir(r"C:\Users\adam\Desktop\test", "100 100", logsPath=r"c:\users\adam\desktop\logging")
