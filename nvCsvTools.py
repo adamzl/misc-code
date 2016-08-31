@@ -27,6 +27,18 @@ def cyclestatsCleanup(inPath):
 def cyclestatsStateBreakout(inPath, outPath, listOfRePatterns):
     with open(inPath, 'r') as inFile:
         with open(outPath, 'w') as outFile:
+            csvReader = csv.reader(inFile)
+            for line in csvReader:
+                if line[0] == "[#id]":
+                    for pattern in listOfRePatterns:
+                        line.append(pattern)
+                else:
+                    stateString = line[-1]
+                    for pattern in listOfRePatterns:
+                        match = re.search(pattern, stateString)
+                        if match != None:
+                            line.append(match.group(1))
+                _writeListToCsvFile(outFile, line)
 
 def _writeListToCsvFile(outFile, line):
     for count, cell in enumerate(line):
@@ -35,5 +47,5 @@ def _writeListToCsvFile(outFile, line):
         outFile.write(cell)
     outFile.write('\n')
 
-if __name__ == '__main__':
-    cyclestatsCleanup(r'C:\data\binary_const_folding\sniper elite\adam_cyclestats_no_ucode.xls')
+# if __name__ == '__main__':
+#     cyclestatsStateBreakout(r'C:\data\binary_const_folding\sniper elite\adam_cyclestats.csv', r'C:\data\binary_const_folding\sniper elite\adam_cyclestats_breakout.csv', ['pshader.*appHash=(0x[\dA-F`]+)'])
