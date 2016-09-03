@@ -3,10 +3,14 @@ import glob
 import csv
 import re
 
-def cyclestatsCleanup(inPath):
-    outPath = inPath[:-3] + 'csv'
+def cyclestatsCleanup(inPath, outDir=""):
+    if outDir == "":
+        outDir = inPath[:-4] + ".csv"
+    else:
+        nameNoExt = os.path.split(os.path.splitext(inPath)[0])[1]
+        outDir = os.path.join(outDir, nameNoExt) + ".csv"
     with open(inPath, 'r') as inFile:
-        with open(outPath, 'w') as outFile:
+        with open(outDir, 'w') as outFile:
             csvReader = csv.reader(inFile, dialect='excel-tab')
             #throw away header components and write of column headers
             for line in csvReader:
@@ -24,8 +28,11 @@ def cyclestatsCleanup(inPath):
 
 #assumed cyclcestatsCleanup was run first
 #group(1) of pattern matches are transcribed as the data of each column
-def cyclestatsStateBreakout(inPath, outPath, listOfRePatterns):
+def cyclestatsStateBreakout(inPath, outDir="", listOfRePatterns=[]):
+    if outDir == "":
+        outDir = os.path.joint(os.path.split(inPath)[0], "_output_cyclestatsStateBreakout")
     with open(inPath, 'r') as inFile:
+        outPath = os.path.join(outDir, os.path.split(inPath)[1])
         with open(outPath, 'w') as outFile:
             csvReader = csv.reader(inFile)
             for line in csvReader:
