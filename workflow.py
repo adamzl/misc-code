@@ -35,5 +35,5 @@ def prepCyclestatsSurvey(originalData, outDir):
     stateRePatterns = ['pshader.*appHash=(0x[\dA-F`]+)']
     a = [nvCsvTools.cyclestatsStateBreakout(inPath, stageOutDir, stateRePatterns) for inPath in fileList]
 
-if __name__ == "__main__":
-    prepCyclestatsSurvey(r"C:\Users\aleibel\Desktop\base_driver", r"c:\users\aleibel\desktop\test")
+#if __name__ == "__main__":
+#    prepCyclestatsSurvey(r"C:\Users\aleibel\Desktop\base_driver", r"c:\users\aleibel\desktop\test")
