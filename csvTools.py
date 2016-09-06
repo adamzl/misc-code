@@ -17,6 +17,7 @@ def csvMergeToXlsx(directory, deliminator=','):
                     worksheet.write(rowNum, colNum, colText)
     workbook.close()
 
+# dataColumn is zero indexed (column A = 0)
 def createVlookupDelta(leftCsvPath, rightCsvPath, outputPath, matchColumn, dataColumn):
     xlsxOutputMode = False
     if os.path.splitext(outputPath)[1] == ".xlsx":
@@ -79,6 +80,27 @@ def createVlookupDelta(leftCsvPath, rightCsvPath, outputPath, matchColumn, dataC
                     worksheet.write(lineNumber-1, 6, rightLine[matchColumn])
                     worksheet.write(lineNumber-1, 7, rightLine[dataColumn])
             outputFile.close()
+
+# inDir directory of csv files, sum the values in dataColumn from each csv into
+# a single row. this forms an output csv file that has the sum of values for
+# each csv.
+# dataColumn is zero indexed (column A = 0)
+def multifileSum(inDir, dataColumn, outPath):
+    with open(outPath, 'w') as outFile:
+        outFile.write("filename,sum\n")
+        for csvFile in glob.glob(os.path.join(inDir, '*.csv')):
+            with open(csvFile, 'r') as inFile:
+                reader = csv.reader(inFile)
+                firstRow = True
+                sum = 0.0
+                for lineList in reader:
+                    if firstRow:
+                        firstRow = False
+                        continue
+                    sum = sum + float(lineList[dataColumn])
+                testName = os.path.splitext(os.path.split(csvFile)[1])[0]
+                sumString = "{}".format(sum)
+                outFile.write(testName + ',' + sumString + '\n')
 
 def _writeListToCsvFile(outFile, line):
     for count, cell in enumerate(line):
