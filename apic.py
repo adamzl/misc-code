@@ -26,7 +26,10 @@ def runApicDir(ApicDirectory, apicParameters, logsPath=""):
                 thread.wait()
                 output = thread.communicate()[0].decode("utf-8")
                 reresult = re.search(r"total time: (\d+\.\d+) seconds, (\d+) frames, average FPS: (\d+\.\d+) plus or minus (\d+\.\d+)%", output)
-                outputFile.write("\n" + dirItem.name + "," + reresult.groups()[2] + "," + reresult.groups()[3] + "," + reresult.groups()[1])
+                if reresult:
+                    outputFile.write("\n" + dirItem.name + "," + reresult.groups()[2] + "," + reresult.groups()[3] + "," + reresult.groups()[1])
+                else:
+                    outputFile.write("\n" + dirItem.name)
                 if logsPath != "":
                     logList = glob.glob(os.path.join(logsPath, "*"))
                     os.makedirs(os.path.join(outLogsPath, dirItem.name), exist_ok=True)

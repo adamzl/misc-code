@@ -3,7 +3,7 @@ import glob
 import csv
 import re
 
-def cyclestatsCleanup(inPath, outDir=""):
+def cyclestatsCleanup(inPath, outDir="", purgeBlankEvents=False):
     if outDir == "":
         outDir = inPath[:-4] + ".csv"
     else:
@@ -24,6 +24,8 @@ def cyclestatsCleanup(inPath, outDir=""):
                 match = re.match(r'\d+', line[0])
                 if not match:
                     break
+                if purgeBlankEvents and line[4] == "":
+                    continue
                 _writeListToCsvFile(outFile, line)
 
 #assumed cyclcestatsCleanup was run first

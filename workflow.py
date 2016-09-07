@@ -19,7 +19,7 @@ def prepCyclestatsSurvey(originalData, outDir):
     stageOutDir = os.path.join(outDir, "2_cleanAndConvertToCsv")
     os.makedirs(stageOutDir, exist_ok=True)
     fileList = glob.glob(os.path.join(outDir, "1_renameFiles", r"*"))
-    a = [nvCsvTools.cyclestatsCleanup(inPath, stageOutDir) for inPath in fileList]
+    a = [nvCsvTools.cyclestatsCleanup(inPath, stageOutDir, True) for inPath in fileList]
 
     # create multifileSum.csv
     stageOutPath = os.path.join(outDir, "multifileSum.csv")
