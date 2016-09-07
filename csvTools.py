@@ -19,6 +19,7 @@ def csvMergeToXlsx(directory, deliminator=','):
 
 # dataColumn is zero indexed (column A = 0)
 def createVlookupDelta(leftCsvPath, rightCsvPath, outputPath, matchColumn, dataColumn):
+
     xlsxOutputMode = False
     if os.path.splitext(outputPath)[1] == ".xlsx":
         xlsxOutputMode = True
@@ -61,24 +62,24 @@ def createVlookupDelta(leftCsvPath, rightCsvPath, outputPath, matchColumn, dataC
                     continue
                 if xlsxOutputMode == False:
                     outputList = []
-                    outputList.append(leftLine[matchColumn])
-                    outputList.append(leftLine[dataColumn])
+                    outputList.append(leftLine[_convertColumnToZeroOffset(matchColumn)])
+                    outputList.append(leftLine[_convertColumnToZeroOffset(dataColumn)])
                     outputList.append("\"=VLOOKUP(A{0},G$2:H${1},2,FALSE)\"".format(lineNumber, lineCount))
                     outputList.append("\"=C{0}/B{0}\"".format(lineNumber))
                     outputList.append("\"=C{0}-B{0}\"".format(lineNumber))
                     outputList.append("")
-                    outputList.append(rightLine[matchColumn])
-                    outputList.append(rightLine[dataColumn])
+                    outputList.append(rightLine[_convertColumnToZeroOffset(matchColumn)])
+                    outputList.append(rightLine[_convertColumnToZeroOffset(dataColumn)])
                     _writeListToCsvFile(outputFile, outputList)
                 else:
-                    worksheet.write(lineNumber-1, 0, leftLine[matchColumn])
-                    worksheet.write(lineNumber-1, 1, leftLine[dataColumn])
+                    worksheet.write(lineNumber-1, 0, leftLine[_convertColumnToZeroOffset(matchColumn)])
+                    worksheet.write(lineNumber-1, 1, leftLine[_convertColumnToZeroOffset(dataColumn)])
                     worksheet.write(lineNumber-1, 2, "=VLOOKUP(A{0},G$2:H${1},2,FALSE)".format(lineNumber, lineCount))
                     worksheet.write(lineNumber-1, 3, "=C{0}/B{0}".format(lineNumber))
                     worksheet.write(lineNumber-1, 4, "=C{0}-B{0}".format(lineNumber))
                     worksheet.write(lineNumber-1, 5, "")
-                    worksheet.write(lineNumber-1, 6, rightLine[matchColumn])
-                    worksheet.write(lineNumber-1, 7, rightLine[dataColumn])
+                    worksheet.write(lineNumber-1, 6, rightLine[_convertColumnToZeroOffset(matchColumn)])
+                    worksheet.write(lineNumber-1, 7, rightLine[_convertColumnToZeroOffset(dataColumn)])
             outputFile.close()
 
 # inDir directory of csv files, sum the values in dataColumn from each csv into
@@ -97,7 +98,7 @@ def multifileSum(inDir, dataColumn, outPath):
                     if firstRow:
                         firstRow = False
                         continue
-                    sum = sum + float(lineList[dataColumn])
+                    sum = sum + float(lineList[_convertColumnToZeroOffset(dataColumn)])
                 testName = os.path.splitext(os.path.split(csvFile)[1])[0]
                 sumString = "{}".format(sum)
                 outFile.write(testName + ',' + sumString + '\n')
@@ -108,6 +109,16 @@ def _writeListToCsvFile(outFile, line):
             outFile.write(',')
         outFile.write(cell)
     outFile.write('\n')
+
+def _convertColumnToZeroOffset(input):
+    ordValue = ord(input)
+    if ordValue >= 48 and ordValue <= 57: # 0-9
+        return ordValue - 48
+    if ordValue >= 97 and ordValue <= 122: # a-z
+        return ordValue - 97
+    if ordValue >= 65 and ordValue <= 90: # A-Z
+        return ordValue - 65
+    return None
 
 if __name__ == "__main__":
     createVlookupDelta(r"C:\users\aleibel\desktop\left.csv", r"C:\users\aleibel\desktop\right.csv", r"C:\users\aleibel\desktop\vlookup.xlsx", 4, 2)
