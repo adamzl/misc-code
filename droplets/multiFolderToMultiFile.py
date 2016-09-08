@@ -11,7 +11,6 @@ def _moveFileRenameToOriginFolder(inFilePath, outDir):
 
 def multiFolderToMultiFile(inDir, regexFilePattern, outDir=""):
     if outDir == "":
-        print("taco")
         outDir = inDir
     globPattern = os.path.join(inDir, "**", regexFilePattern)
     fileList = glob.glob(globPattern)
