@@ -30,6 +30,7 @@ def cyclestatsCleanup(inPath, outDir="", purgeBlankEvents=False):
 
 #assumed cyclcestatsCleanup was run first
 #group(1) of pattern matches are transcribed as the data of each column
+#common values for listOfRePatterns: ["pshader.*appHash=(0x[\dA-F`]+)", "compute.*appHash=(0x[\dA-F`]+)"]
 def cyclestatsStateBreakout(inPath, outDir="", listOfRePatterns=[]):
     if outDir == "":
         outDir = os.path.joint(os.path.split(inPath)[0], "_output_cyclestatsStateBreakout")
