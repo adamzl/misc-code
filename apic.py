@@ -12,7 +12,7 @@ def runApicDir(ApicDirectory, apicParameters, logsPath=""):
         outLogsPath = os.path.join(ApicDirectory, "logs")
         print("Copying per-run logs from " + logsPath + " to " + outLogsPath)
     with open(os.path.join(outputDir, "results.csv"), "w") as outputFile:
-        outputFile.write("APIC,Averag FPS,Plus Minus,Frames")
+        outputFile.write("APIC,Average FPS,Plus Minus,Frames")
         for dirItem in os.scandir(ApicDirectory):
             if dirItem.path == outputDir:
                 continue
