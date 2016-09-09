@@ -8,7 +8,7 @@ import csv
 #common values for listOfRePatterns: ["pshader.*appHash=(0x[\dA-F`]+)", "compute.*appHash=(0x[\dA-F`]+)"]
 def cyclestatsStateBreakout(inPath, listOfRePatterns=[], outPath=""):
     if outPath == "":
-        outPath = "_" + inPath
+        outPath = os.path.join(os.path.split(inPath)[0], "_" + os.path.split(inPath)[1])
     with open(inPath, 'r') as inFile:
         with open(outPath, 'w') as outFile:
             csvReader = csv.reader(inFile)

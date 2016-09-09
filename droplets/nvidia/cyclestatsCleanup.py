@@ -5,7 +5,7 @@ import csv
 
 def cyclestatsCleanup(inPath, outPath=""):
     if outPath == "":
-        outPath = "_" + inPath[:-4] + ".csv"
+        outPath = inPath[:-4] + ".csv"
     with open(inPath, 'r') as inFile:
         with open(outPath, 'w') as outFile:
             csvReader = csv.reader(inFile, dialect='excel-tab')
