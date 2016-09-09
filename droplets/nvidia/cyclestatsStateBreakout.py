@@ -34,9 +34,13 @@ def _writeListToCsvFile(outFile, line):
 
 if __name__ == "__main__":
     if len(sys.argv) >= 2:
-        inPath = sys.argv[1]
-        print("[1/2] inPath: {}".format(inPath))
+        inPathList = sys.argv[1:]
+        print("[1/2] inPath:\n")
+        for arg in sys.argv[1:]:
+            print("\t{}".format(arg))
     else:
         inPath = input("[1/2] inPath: ")
+        inPathList = [inPath] 
     regexPattern = input("[2/2] regexPattern: ")
-    cyclestatsStateBreakout(inPath, [regexPattern])
+    for inPath in inPathList:
+        cyclestatsStateBreakout(inPath, [regexPattern])
