@@ -36,7 +36,8 @@ def _writeListToCsvFile(outFile, line):
     outFile.write('\n')
 
 predefinedRegexPatterns = [
-    ("[tags,pshader,compute]", ["^([A-Z_<>]+)", "pshader.*appHash=(0x[\dA-F`]+)", "compute.*appHash=(0x[\dA-F`]+)"])
+    ("[tags, pshader, compute]", ["^([A-Z_<>]+)", "pshader.*appHash=(0x[\dA-F`]+)", "compute.*appHash=(0x[\dA-F`]+)"]),
+    ("[tags, pshader.apphash, pshader.ucodehash, compute.apphash, compute.ucodehash]", ["^([A-Z_<>]+)", "pshader.*appHash=(0x[\dA-F`]+)", "pshader.*ucodeHash=(0x[\dA-F`]+)", "compute.*appHash=(0x[\dA-F`]+)", "compute.*ucodeHash=(0x[\dA-F`]+)"]),
 ]
 
 if __name__ == "__main__":
