@@ -6,11 +6,10 @@ import csv
 #assumed cyclcestatsCleanup was run first
 #group(1) of pattern matches are transcribed as the data of each column
 #common values for listOfRePatterns: ["pshader.*appHash=(0x[\dA-F`]+)", "compute.*appHash=(0x[\dA-F`]+)"]
-def cyclestatsStateBreakout(inPath, listOfRePatterns=[], outDir=""):
-    if outDir == "":
-        outDir = os.path.split(inPath)[0]
+def cyclestatsStateBreakout(inPath, listOfRePatterns=[], outPath=""):
+    if outPath == "":
+        outPath = "_" + inPath
     with open(inPath, 'r') as inFile:
-        outPath = os.path.join(outDir, "_" + os.path.split(inPath)[1])
         with open(outPath, 'w') as outFile:
             csvReader = csv.reader(inFile)
             for line in csvReader:
