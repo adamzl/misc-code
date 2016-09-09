@@ -35,7 +35,7 @@ def _writeListToCsvFile(outFile, line):
 if __name__ == "__main__":
     if len(sys.argv) >= 2:
         inPathList = sys.argv[1:]
-        print("[1/2] inPath:\n")
+        print("[1/2] inPath:")
         for arg in sys.argv[1:]:
             print("\t{}".format(arg))
     else:

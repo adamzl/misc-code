@@ -19,7 +19,6 @@ def csvMergeToXlsx(directory, deliminator=','):
 
 # dataColumn is zero indexed (column A = 0)
 def createVlookupDelta(leftCsvPath, rightCsvPath, outputPath, matchColumn, dataColumn):
-
     xlsxOutputMode = False
     if os.path.splitext(outputPath)[1] == ".xlsx":
         xlsxOutputMode = True
