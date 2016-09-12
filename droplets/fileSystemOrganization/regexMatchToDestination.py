@@ -13,11 +13,15 @@ def regexMatchToDestination(inDir, outDir, regexFilePattern):
         shutil.move(file, outPath)
 
 if __name__ == "__main__":
-    if len(sys.argv) >= 2:
-        inDir = sys.argv[1]
-        print("[1/3] inDir: {}".format(inDir))
-    else:
-        inDir = input("[1/3] inDir: ")
-    outDir = input("[2/3] outDir: ")
-    regexFilePattern = input("[3/3] regexFilePattern: ")
-    regexMatchToDestination(inDir, outDir, regexFilePattern)
+    try:
+        if len(sys.argv) >= 2:
+            inDir = sys.argv[1]
+            print("[1/3] inDir: {}".format(inDir))
+        else:
+            inDir = input("[1/3] inDir: ")
+        outDir = input("[2/3] outDir: ")
+        regexFilePattern = input("[3/3] regexFilePattern: ")
+        regexMatchToDestination(inDir, outDir, regexFilePattern)
+    except Exception as e:
+        print(e)
+        input("press any key")
