@@ -10,7 +10,7 @@ if __name__ == "__main__":
                 print("\t{}".format(arg))
         else:
             inPath = input("[1/1] inPath: ")
-            inPathList = [inPath] 
+            inPathList = [inPath]
         for inPath in inPathList:
             azlpy.nvidia.cyclestatsCleanup(inPath)
     except Exception as e:
