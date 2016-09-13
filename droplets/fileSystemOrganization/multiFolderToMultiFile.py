@@ -13,8 +13,8 @@ def _moveFileRenameToOriginFolder(inFilePath, outDir):
 def multiFolderToMultiFile(inDir, regexFilePattern, outDir=""):
     if outDir == "":
         outDir = inDir
-    globPattern = os.path.join(inDir, "**", regexFilePattern)
-    fileList = glob.glob(globPattern)
+    os.makedirs(outDir, exist_ok=True)
+    fileList = glob.glob(os.path.join(inDir, regexFilePattern))
     for file in fileList:
         _moveFileRenameToOriginFolder(file, outDir)
 
