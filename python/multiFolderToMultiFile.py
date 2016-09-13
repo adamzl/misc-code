@@ -8,8 +8,8 @@ if __name__ == "__main__":
             print("[1/3] inDir: {}".format(inDir))
         else:
             inDir = input("[1/3] inDir: ")
-        regexFilePattern = input("[2/3] regexFilePattern: ")
-        outDir = input("[3/3] outDir: ")
+        outDir = input("[2/3] outDir: ")
+        regexFilePattern = input("[3/3] regexFilePattern: ")
         azlpy.fileSystem.multiFolderToMultiFile(inDir, regexFilePattern, outDir)
     except Exception as e:
         print(e)
