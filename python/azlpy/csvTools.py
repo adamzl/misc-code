@@ -3,9 +3,21 @@ import glob
 import csv
 from xlsxwriter.workbook import Workbook
 
+def mergeToXlsx(fileList):
+    workbookPath = os.path.join(os.path.split(fileList[0])[0], os.path.split(os.path.split(fileList[0])[0])[1] + ".xlsx")
+    workbook = Workbook(workbookPath, {'strings_to_numbers': True})
+    for csvfile in fileList:
+        worksheet = workbook.add_worksheet(os.path.splitext(os.path.basename(csvfile))[0])
+        with open(csvfile, 'r') as file:
+            reader = csv.reader(file)
+            for rowNum, rowText in enumerate(reader):
+                for colNum, colText in enumerate(rowText):
+                    worksheet.write(rowNum, colNum, colText)
+    workbook.close()
+
 #for a directory of csv files, create single xlsx file with each csv as a worksheet
 #adapted from http://stackoverflow.com/a/34715816
-def csvMergeToXlsx(directory, deliminator=','):
+def mergeToXlsx(directory, deliminator=','):
     workbook = Workbook(os.path.join(directory, os.path.basename(directory)) + ".xlsx", {'strings_to_numbers': True})
     for csvfile in glob.glob(os.path.join(directory, '*.csv')):
         worksheet = workbook.add_worksheet(os.path.splitext(os.path.basename(csvfile))[0])
@@ -118,6 +130,3 @@ def _convertColumnToZeroOffset(input):
     if ordValue >= 65 and ordValue <= 90: # A-Z
         return ordValue - 65
     return None
-
-if __name__ == "__main__":
-    createVlookupDelta(r"C:\users\aleibel\desktop\left.csv", r"C:\users\aleibel\desktop\right.csv", r"C:\users\aleibel\desktop\vlookup.xlsx", 4, 2)

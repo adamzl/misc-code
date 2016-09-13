@@ -8,7 +8,7 @@ import nvCsvTools
 import mapMethods
 
 # cyclestats survey to cleaned up folder
-def prepCyclestatsSurvey(originalData, outDir):
+def processCyclestatsSurvey(originalData, outDir):
     # get all the *.xls files from their directories that were named after the APIC folder
     stageOutDir = os.path.join(outDir, "1_renameFiles")
     os.makedirs(stageOutDir, exist_ok=True)
@@ -24,6 +24,3 @@ def prepCyclestatsSurvey(originalData, outDir):
     # create multifileSum.csv
     stageOutPath = os.path.join(outDir, "multifileSum.csv")
     csvTools.multifileSum(stageOutDir, 'C', stageOutPath)
-
-#if __name__ == "__main__":
-#    prepCyclestatsSurvey(r"C:\Users\aleibel\Desktop\base_driver", r"c:\users\aleibel\desktop\test")
