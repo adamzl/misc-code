@@ -23,15 +23,7 @@ def prepCyclestatsSurvey(originalData, outDir):
 
     # create multifileSum.csv
     stageOutPath = os.path.join(outDir, "multifileSum.csv")
-    csvTools.multifileSum(stageOutDir, 2, stageOutPath)
-
-    # breakout pshader state
-    stageOutDir = os.path.join(outDir, "3_stateBreakouts")
-    os.makedirs(stageOutDir, exist_ok=True)
-    fileList = glob.glob(os.path.join(outDir, "2_cleanAndConvertToCsv", r"*"))
-    stateRePatterns = ['pshader.*appHash=(0x[\dA-F`]+)']
-    a = [nvCsvTools.cyclestatsStateBreakout(inPath, stageOutDir, stateRePatterns) for inPath in fileList]
-
+    csvTools.multifileSum(stageOutDir, 'C', stageOutPath)
 
 #if __name__ == "__main__":
 #    prepCyclestatsSurvey(r"C:\Users\aleibel\Desktop\base_driver", r"c:\users\aleibel\desktop\test")
