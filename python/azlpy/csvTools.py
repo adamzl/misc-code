@@ -1,6 +1,7 @@
 import os
 import glob
 import csv
+import re
 from xlsxwriter.workbook import Workbook
 
 def mergeToXlsx(fileList):
@@ -113,6 +114,18 @@ def multifileSum(inDir, outPath, dataColumn):
                 testName = os.path.splitext(os.path.split(csvFile)[1])[0]
                 sumString = "{}".format(sum)
                 outFile.write(testName + ',' + sumString + '\n')
+
+# makes a copy of a csv and excludes rows that have values matching a regex
+# pattern in the specified column
+def removeRowsWithColumnValue(inPath, outPath, regexPattern, column):
+    column = _convertColumnToZeroOffset(column)
+    with open(inPath, "r") as inFile:
+        with open(outPath, "w") as outFile:
+            reader = csv.reader(inFile)
+            for lineList in reader:
+                if re.match(regexPattern, lineList[column]):
+                    continue
+                _writeListToCsvFile(outFile, lineList)
 
 def _writeListToCsvFile(outFile, line):
     for count, cell in enumerate(line):
