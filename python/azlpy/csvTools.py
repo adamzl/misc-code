@@ -97,7 +97,7 @@ def createVlookupDelta(leftCsvPath, rightCsvPath, outputPath, matchColumn, dataC
 # a single row. this forms an output csv file that has the sum of values for
 # each csv.
 # dataColumn is zero indexed (column A = 0)
-def multifileSum(inDir, dataColumn, outPath):
+def multifileSum(inDir, outPath, dataColumn):
     with open(outPath, 'w') as outFile:
         outFile.write("filename,sum\n")
         for csvFile in glob.glob(os.path.join(inDir, '*.csv')):
