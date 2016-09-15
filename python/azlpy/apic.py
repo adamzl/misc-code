@@ -4,17 +4,12 @@ import re
 import subprocess
 import sys
 
-def runApicDir(ApicDirectory, apicParameters, logsPath=""):
-    outputDir = os.path.join(ApicDirectory, "logs")
-    os.makedirs(outputDir, exist_ok=True)
-    print("Writing output to " + outputDir)
-    if logsPath != "":
-        outLogsPath = os.path.join(ApicDirectory, "logs")
-        print("Copying per-run logs from " + logsPath + " to " + outLogsPath)
-    with open(os.path.join(outputDir, "results.csv"), "w") as outputFile:
+def runApicDir(ApicDirectory, outDir, logsDir, apicParameters):
+    os.makedirs(outDir, exist_ok=True)
+    with open(os.path.join(outDir, "apic_fps.csv"), "w") as outputFile:
         outputFile.write("APIC,Average FPS,Plus Minus,Frames")
         for dirItem in os.scandir(ApicDirectory):
-            if dirItem.path == outputDir:
+            if dirItem.path == outDir:
                 continue
             if dirItem.is_dir():
                 executablePath = glob.glob(os.path.join(dirItem.path, "x64", "*.exe"))
@@ -30,11 +25,17 @@ def runApicDir(ApicDirectory, apicParameters, logsPath=""):
                     outputFile.write("\n" + dirItem.name + "," + reresult.groups()[2] + "," + reresult.groups()[3] + "," + reresult.groups()[1])
                 else:
                     outputFile.write("\n" + dirItem.name)
-                if logsPath != "":
-                    logList = glob.glob(os.path.join(logsPath, "*"))
-                    os.makedirs(os.path.join(outLogsPath, dirItem.name), exist_ok=True)
-                    for logItem in logList:
-                        os.rename(logItem, os.path.join(outLogsPath, dirItem.name, os.path.basename(logItem)))
+                os.makedirs(os.path.join(outDir, dirItem.name), exist_ok=True)
+                logList = glob.glob(os.path.join(logsDir, "*"))
+                for logItem in logList:
+                    os.rename(logItem, os.path.join(outDir, dirItem.name, os.path.basename(logItem)))
 
-if __name__ == "__main__":
-    runApicDir(r"C:\Users\adam\Desktop\test", "100 100", logsPath=r"c:\users\adam\desktop\logging")
+def multiRunApicDir(ApicDirectory, outDir, perRunScriptDir, logsDir, apicParameters):
+    runScriptList = glob.glob(os.path.join(perRunScriptDir, r"*"))
+    for runScript in runScriptList:
+        runOutDir = os.path.join(outDir, os.path.splitext(os.path.split(runScript)[1])[0])
+        os.makedirs(outDir, exist_ok=True)
+        thread = subprocess.Popen(runScript, stdout=subprocess.PIPE)
+        thread.wait()
+        output = thread.communicate()[0].decode("utf-8")
+        runApicDir(ApicDirectory, runOutDir, logsDir, apicParameters)
