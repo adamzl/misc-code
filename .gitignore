@@ -1,3 +1,4 @@
 //ignore hidden directories
 .*/**
 *.pyc
+*.json
