@@ -15,7 +15,7 @@ predefinedRegexPatterns = [
                                                                                            "hullshader{[^}]*?appHash=(0x[\dA-F`]+)", "hullshader{[^}]*?ucodeHash=(0x[\dA-F`]+)",
                                                                                            "domainshader{[^}]*?appHash=(0x[\dA-F`]+)", "domainshader{[^}]*?ucodeHash=(0x[\dA-F`]+)"]),
 ]
-[^}]
+
 if __name__ == "__main__":
     try:
         if len(sys.argv) >= 2:
