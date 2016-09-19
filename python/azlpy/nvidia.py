@@ -25,7 +25,7 @@ def cyclestatsCleanup(inPath, outPath=""):
 
 #assumed cyclcestatsCleanup was run first
 #group(1) of pattern matches are transcribed as the data of each column
-#common values for listOfRePatterns: ["pshader.*appHash=(0x[\dA-F`]+)", "compute.*appHash=(0x[\dA-F`]+)"]
+#see stateBreakoutPatterns list for common usages
 def cyclestatsStateBreakout(inPath, listOfRePatterns=[], outPath=""):
     if outPath == "":
         outPath = os.path.join(os.path.split(inPath)[0], "_" + os.path.split(inPath)[1])
@@ -64,3 +64,14 @@ def _writeListToCsvFile(outFile, line):
             outFile.write(',')
         outFile.write(cell)
     outFile.write('\n')
+
+stateBreakoutPatterns = dict()
+_sbp = stateBreakoutPatterns
+_sbp["tags"]    = ["[\^ ]([A-Z_<>]+)"]
+_sbp["compute"] = ["compute{[^}]*?appHash=(0x[\dA-F`]+)", "compute{[^}]*?ucodeHash=(0x[\dA-F`]+)"]
+_sbp["pshader"] = ["pshader{[^}]*?appHash=(0x[\dA-F`]+)", "pshader{[^}]*?ucodeHash=(0x[\dA-F`]+)"]
+_sbp["vshader"] = ["vshader{[^}]*?appHash=(0x[\dA-F`]+)", "vshader{[^}]*?ucodeHash=(0x[\dA-F`]+)"]
+_sbp["gshader"] = ["gshader{[^}]*?appHash=(0x[\dA-F`]+)", "gshader{[^}]*?ucodeHash=(0x[\dA-F`]+)"]
+_sbp["hshader"] = ["hullshader{[^}]*?appHash=(0x[\dA-F`]+)", "hullshader{[^}]*?ucodeHash=(0x[\dA-F`]+)"]
+_sbp["dshader"] = ["domainshader{[^}]*?appHash=(0x[\dA-F`]+)", "domainshader{[^}]*?ucodeHash=(0x[\dA-F`]+)"]
+_sbp["allshaders"] = _sbp["pshader"] + _sbp["compute"] + _sbp["vshader"] + _sbp["gshader"] + _sbp["hshader"] + _sbp["dshader"]
