@@ -2,6 +2,7 @@ import os
 import glob
 import csv
 import re
+import shutil
 
 def cyclestatsCleanup(inPath, outPath=""):
     if outPath == "":
@@ -27,15 +28,18 @@ def cyclestatsCleanup(inPath, outPath=""):
 #group(1) of pattern matches are transcribed as the data of each column
 #see stateBreakoutPatterns list for common usages
 def cyclestatsStateBreakout(inPath, listOfRePatterns=[], outPath=""):
+    overwriteInPath = False
     if outPath == "":
-        outPath = os.path.join(os.path.split(inPath)[0], "_" + os.path.split(inPath)[1])
+        overwriteInPath = True
+        outPath = inPath + ".temp"
     with open(inPath, 'r') as inFile:
         with open(outPath, 'w') as outFile:
             csvReader = csv.reader(inFile)
             for line in csvReader:
                 if line[0] == "[#id]":
                     patternsInsertIndex = len(line) - 1
-                    line = line[:patternsInsertIndex] + listOfRePatterns + line[patternsInsertIndex:]
+                    listOfRePatternsCSVSafe = [re.sub(r",", "", pattern) for pattern in listOfRePatterns]
+                    line = line[:patternsInsertIndex] + listOfRePatternsCSVSafe + line[patternsInsertIndex:]
                 else:
                     patternMatches = []
                     for pattern in listOfRePatterns:
@@ -46,10 +50,15 @@ def cyclestatsStateBreakout(inPath, listOfRePatterns=[], outPath=""):
                             patternMatches.append("")
                     line = line[:patternsInsertIndex] + patternMatches + line[patternsInsertIndex:]
                 _writeListToCsvFile(outFile, line)
+    if overwriteInPath:
+        os.remove(inPath)
+        shutil.move(inPath + ".temp", inPath)
 
 def cyclestatsInsertFormulaHeaders(inPath, outPath=""):
+    overwriteInPath = False
     if outPath == "":
-        outPath = os.path.join(os.path.split(inPath)[0], "_" + os.path.split(inPath)[1])
+        overwriteInPath = True
+        outPath = inPath + ".temp"
     with open(inPath, 'r') as inFile:
         with open(outPath, 'w') as outFile:
             csvReader = csv.reader(inFile)
@@ -57,6 +66,9 @@ def cyclestatsInsertFormulaHeaders(inPath, outPath=""):
             _writeListToCsvFile(outFile, formulaHeaderRow)
             for line in csvReader:
                 _writeListToCsvFile(outFile, line)
+    if overwriteInPath:
+        os.remove(inPath)
+        shutil.move(inPath + ".temp", inPath)
 
 def _writeListToCsvFile(outFile, line):
     for count, cell in enumerate(line):
@@ -67,7 +79,7 @@ def _writeListToCsvFile(outFile, line):
 
 stateBreakoutPatterns = dict()
 _sbp = stateBreakoutPatterns
-_sbp["tags"]    = ["[ ]*([A-Z_<>]{2,})"]
+_sbp["tags"]    = ["[ ]*([A-Z_<>]{3,})"]
 _sbp["compute"] = ["compute{[^}]*?appHash=(0x[\dA-F`]+)", "compute{[^}]*?ucodeHash=(0x[\dA-F`]+)"]
 _sbp["pshader"] = ["pshader{[^}]*?appHash=(0x[\dA-F`]+)", "pshader{[^}]*?ucodeHash=(0x[\dA-F`]+)"]
 _sbp["vshader"] = ["vshader{[^}]*?appHash=(0x[\dA-F`]+)", "vshader{[^}]*?ucodeHash=(0x[\dA-F`]+)"]

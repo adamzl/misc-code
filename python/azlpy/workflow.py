@@ -49,10 +49,5 @@ def processCyclestatsFile(inPath):
     os.remove(inPath)
     inPath = inPath[:-4] + ".csv"
     nvidia.cyclestatsStateBreakout(inPath,
-                                   nvidia.stateBreakoutPatterns["tags"] + nvidia.stateBreakoutPatterns["allshaders"],
-                                   inPath + ".temp")
-    os.remove(inPath)
-    shutil.move(inPath + ".temp", inPath)
-    nvidia.cyclestatsInsertFormulaHeaders(inPath, inPath + ".temp")
-    os.remove(inPath)
-    shutil.move(inPath + ".temp", inPath)
+                                   nvidia.stateBreakoutPatterns["tags"] + nvidia.stateBreakoutPatterns["allshaders"])
+    nvidia.cyclestatsInsertFormulaHeaders(inPath)
