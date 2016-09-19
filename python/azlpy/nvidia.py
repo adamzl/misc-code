@@ -47,6 +47,17 @@ def cyclestatsStateBreakout(inPath, listOfRePatterns=[], outPath=""):
                     line = line[:patternsInsertIndex] + patternMatches + line[patternsInsertIndex:]
                 _writeListToCsvFile(outFile, line)
 
+def cyclestatsInsertFormulaHeaders(inPath, outPath=""):
+    if outPath == "":
+        outPath = os.path.join(os.path.split(inPath)[0], "_" + os.path.split(inPath)[1])
+    with open(inPath, 'r') as inFile:
+        with open(outPath, 'w') as outFile:
+            csvReader = csv.reader(inFile)
+            formulaHeaderRow = ["\"=SUBTOTAL(102,A3:A1048576)\"", "\"=SUBTOTAL(109,B3:B1048576)\"", "\"=SUBTOTAL(109,C3:C1048576)\"", "\"=SUBTOTAL(109,D3:D1048576)\""]
+            _writeListToCsvFile(outFile, formulaHeaderRow)
+            for line in csvReader:
+                _writeListToCsvFile(outFile, line)
+
 def _writeListToCsvFile(outFile, line):
     for count, cell in enumerate(line):
         if count > 0:
