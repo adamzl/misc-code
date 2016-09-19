@@ -49,14 +49,8 @@ def processCyclestatsFile(inPath):
     os.remove(inPath)
     inPath = inPath[:-4] + ".csv"
     nvidia.cyclestatsStateBreakout(inPath,
-                                   ["^([A-Z_<>]+)",
-                                    "pshader{[^}]*?appHash=(0x[\dA-F`]+)", "pshader{[^}]*?ucodeHash=(0x[\dA-F`]+)",
-                                    "compute{[^}]*?appHash=(0x[\dA-F`]+)", "compute{[^}]*?ucodeHash=(0x[\dA-F`]+)",
-                                    "vshader{[^}]*?appHash=(0x[\dA-F`]+)", "vshader{[^}]*?ucodeHash=(0x[\dA-F`]+)",
-                                    "gshader{[^}]*?appHash=(0x[\dA-F`]+)", "gshader{[^}]*?ucodeHash=(0x[\dA-F`]+)",
-                                    "hullshader{[^}]*?appHash=(0x[\dA-F`]+)", "hullshader{[^}]*?ucodeHash=(0x[\dA-F`]+)",
-                                    "domainshader{[^}]*?appHash=(0x[\dA-F`]+)", "domainshader{[^}]*?ucodeHash=(0x[\dA-F`]+)"],
-                                    inPath + ".temp")
+                                   nvidia.stateBreakoutPatterns["tags"] + nvidia.stateBreakoutPatterns["allshaders"],
+                                   inPath + ".temp")
     os.remove(inPath)
     shutil.move(inPath + ".temp", inPath)
     nvidia.cyclestatsInsertFormulaHeaders(inPath, inPath + ".temp")
