@@ -31,6 +31,9 @@ def runApicDir(ApicDirectory, outDir, logsDir, apicParameters):
                     os.rename(logItem, os.path.join(outDir, dirItem.name, os.path.basename(logItem)))
 
 def multiRunApicDir(ApicDirectory, outDir, perRunScriptDir, logsDir, apicParameters):
+    if not _testAdmin:
+        print("Must run this method with elevated permissions")
+        return
     runScriptList = glob.glob(os.path.join(perRunScriptDir, r"*"))
     for runScript in runScriptList:
         runOutDir = os.path.join(outDir, os.path.splitext(os.path.split(runScript)[1])[0])
@@ -39,3 +42,12 @@ def multiRunApicDir(ApicDirectory, outDir, perRunScriptDir, logsDir, apicParamet
         thread.wait()
         output = thread.communicate()[0].decode("utf-8")
         runApicDir(ApicDirectory, runOutDir, logsDir, apicParameters)
+
+def _testAdmin():
+    import ctypes
+    import os
+    if os.name == "nt":
+        return ctypes.windll.shell32.IsUserAnAdmin() != 0
+    if os.name == "posix":
+        return os.getuid() == 0
+    return False
