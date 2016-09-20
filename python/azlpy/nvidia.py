@@ -79,7 +79,7 @@ def _writeListToCsvFile(outFile, line):
 
 stateBreakoutPatterns = dict()
 _sbp = stateBreakoutPatterns
-_sbp["tags"]    = ["[ ]*([A-Z_<>]{3,})"]
+_sbp["tags"]    = ["(?:\[.+?\] )*([A-Z_<>]{3,})"]
 _sbp["compute"] = ["compute{[^}]*?appHash=(0x[\dA-F`]+)", "compute{[^}]*?ucodeHash=(0x[\dA-F`]+)"]
 _sbp["pshader"] = ["pshader{[^}]*?appHash=(0x[\dA-F`]+)", "pshader{[^}]*?ucodeHash=(0x[\dA-F`]+)"]
 _sbp["vshader"] = ["vshader{[^}]*?appHash=(0x[\dA-F`]+)", "vshader{[^}]*?ucodeHash=(0x[\dA-F`]+)"]
