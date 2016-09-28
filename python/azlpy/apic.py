@@ -3,8 +3,11 @@ import os
 import re
 import subprocess
 import sys
+import shutil
+import stat
+import time
 
-def runApicDir(ApicDirectory, outDir, logsDir, apicParameters):
+def runApicDir(ApicDirectory, outDir, logsDir, apicParameters, renameExe=False):
     os.makedirs(outDir, exist_ok=True)
     with open(os.path.join(outDir, "apic_fps.csv"), "w") as outputFile:
         outputFile.write("APIC,Average FPS,Plus Minus,Frames")
@@ -12,13 +15,23 @@ def runApicDir(ApicDirectory, outDir, logsDir, apicParameters):
             if dirItem.path == outDir:
                 continue
             if dirItem.is_dir():
-                executablePath = glob.glob(os.path.join(dirItem.path, "x64", "*.exe"))
-                commandLine = [executablePath[0]] + apicParameters.split(" ")
+                executablePath = glob.glob(os.path.join(dirItem.path, "x64", "*.exe"))[0]
+                if renameExe:
+                    newExePath = os.path.join(os.path.split(executablePath)[0], "apic.exe")
+                    shutil.copy(executablePath, newExePath)
+                    executablePath = newExePath
+                commandLine = [executablePath] + apicParameters.split(" ")
                 print(commandLine[0])
                 thread = subprocess.Popen(commandLine,
                                         cwd=dirItem.path,
                                         stdout=subprocess.PIPE)
                 thread.wait()
+                # you would think thread.wait() would be enough but i still get file
+                # access issues when attempting to os.remove()
+                time.sleep(1.0)
+                if renameExe:
+                    os.chmod(newExePath, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
+                    os.remove(newExePath)
                 output = thread.communicate()[0].decode("utf-8")
                 reresult = re.search(r"total time: (\d+\.\d+) seconds, (\d+) frames, average FPS: (\d+\.\d+) plus or minus (\d+\.\d+)%", output)
                 if reresult:
@@ -30,18 +43,17 @@ def runApicDir(ApicDirectory, outDir, logsDir, apicParameters):
                 for logItem in logList:
                     os.rename(logItem, os.path.join(outDir, dirItem.name, os.path.basename(logItem)))
 
-def multiRunApicDir(ApicDirectory, outDir, perRunScriptDir, logsDir, apicParameters):
+def multiRunApicDir(ApicDirectory, perRunScriptDir, logsDir, apicParameters, renameExe=False):
     if not _testAdmin:
         print("Must run this method with elevated permissions")
         return
     runScriptList = glob.glob(os.path.join(perRunScriptDir, r"*"))
     for runScript in runScriptList:
-        runOutDir = os.path.join(outDir, os.path.splitext(os.path.split(runScript)[1])[0])
-        os.makedirs(outDir, exist_ok=True)
+        runOutDir = os.path.join(perRunScriptDir, os.path.splitext(os.path.split(runScript)[1])[0])
         thread = subprocess.Popen(runScript, stdout=subprocess.PIPE)
         thread.wait()
         output = thread.communicate()[0].decode("utf-8")
-        runApicDir(ApicDirectory, runOutDir, logsDir, apicParameters)
+        runApicDir(ApicDirectory, runOutDir, logsDir, apicParameters, renameExe)
 
 def _testAdmin():
     import ctypes
